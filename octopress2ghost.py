@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
 Convert all markdown files (octopress style) to JSON (ghost style).

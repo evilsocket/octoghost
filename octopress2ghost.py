@@ -111,8 +111,12 @@ for markdown_file in glob.glob("%s/*.markdown" % sys.argv[ARG_INPUT_FOLDER]):
                         post["status"] = value == "true" and "published" or "draft"
                     elif field == "date":
                         # FIX: This fixes the ValueError when timezone is at the end of the value
-                        value = value.split(':')[0] + ":" + value.split(':')[1]
-
+                        values = value.split(':')
+                        if (len(values) > 1):
+                            value = values[0] + ":" + values[1]
+                        else:
+                            value = values[0] + " " + "00:00"
+                       
                         d = datetime.datetime.strptime(value.strip(), "%Y-%m-%d %H:%M")
                         t = int(time.mktime(d.timetuple()) * 1e3)
                         post["created_at"] = t

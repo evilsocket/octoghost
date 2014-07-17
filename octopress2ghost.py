@@ -66,7 +66,9 @@ tags = []
 posts_tags = []
 categories = {}
 
-for markdown_file in glob.glob("%s/*.markdown" % sys.argv[ARG_INPUT_FOLDER]):
+markdown_files = glob.glob("%s/*.markdown" % sys.argv[ARG_INPUT_FOLDER]) + glob.glob("%s/*.md" % sys.argv[ARG_INPUT_FOLDER])
+
+for markdown_file in markdown_files:
     is_metadata = False
     is_post = False
     post = {

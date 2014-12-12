@@ -145,7 +145,7 @@ for markdown_file in markdown_files:
                                     tags.append({
                                         "id": categories[tag],
                                         "slug": slugify(tag),
-                                        "name": tag,
+                                        "name": tag.replace(",", "").replace("]", "").replace("[", ""),
                                         "uuid": str(uuid.uuid4())
                                         })
                                 posts_tags.append({

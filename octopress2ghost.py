@@ -134,6 +134,8 @@ for markdown_file in markdown_files:
                         post["updated_at"] = t
                         post["published_at"] = t
                     elif field == "categories":
+                        if not value:
+                            pass
                         the_tags = value.split(" ")
                         for tag in the_tags:
                             if tag:

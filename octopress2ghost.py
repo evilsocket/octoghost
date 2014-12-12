@@ -127,21 +127,22 @@ for markdown_file in markdown_files:
                     elif field == "categories":
                         the_tags = value.split(" ")
                         for tag in the_tags:
-                            if not categories.has_key(tag):
-                                categories[tag] = next_tag_id
-                                next_tag_id = next_tag_id + 1
-                                tags.append({
-                                    "id": categories[tag],
-                                    "slug": slugify(tag),
-                                    "name": tag,
-                                    "uuid": str(uuid.uuid4())
+                            if tag:
+                                if not categories.has_key(tag):
+                                    categories[tag] = next_tag_id
+                                    next_tag_id = next_tag_id + 1
+                                    tags.append({
+                                        "id": categories[tag],
+                                        "slug": slugify(tag),
+                                        "name": tag,
+                                        "uuid": str(uuid.uuid4())
+                                        })
+                                posts_tags.append({
+                                    "id": post_tag_id,
+                                    "post_id": post_id,
+                                    "tag_id": categories[tag],
                                     })
-                            posts_tags.append({
-                                "id": post_tag_id,
-                                "post_id": post_id,
-                                "tag_id": categories[tag],
-                                })
-                            post_tag_id = post_tag_id + 1
+                                post_tag_id = post_tag_id + 1
                     else:
                         pass
             else:

@@ -46,6 +46,11 @@ lang = "en_US"
 ARG_INPUT_FOLDER = 1
 ARG_OUTPUT_JSON = 2
 
+def strip_single_quote(s):
+    if s.endswith(" "): s = s[:-1]
+    if s.startswith(" "): s = s[1:]
+    return s
+
 if len(sys.argv) < 3:
     ARG_INPUT_FOLDER = "."
     ARG_OUTPUT_JSON = "output.json"
@@ -161,9 +166,4 @@ ghost_data["db"][0]["data"]["tags"] = tags
 ghost_data["db"][0]["data"]['posts_tags'] = posts_tags
 
 print json.dumps(ghost_data)
-
-def strip_single_quote(s):
-    if s.endswith(" "): s = s[:-1]
-    if s.startswith(" "): s = s[1:]
-    return s
 

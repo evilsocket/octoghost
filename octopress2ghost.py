@@ -154,9 +154,9 @@ for markdown_file in markdown_files:
 ghost_json_file_name = sys.argv[ARG_OUTPUT_JSON]
 ghost_data = json.loads(open(ghost_json_file_name).read())
 
-ghost_data['data']['posts'] = posts
-ghost_data['data']['tags'] = tags
-ghost_data['data']['posts_tags'] = posts_tags
+ghost_data["db"][0]["data"]["posts"] = posts
+ghost_data["db"][0]["data"]["tags"] = tags
+ghost_data["db"][0]["data"]['posts_tags'] = posts_tags
 
 print json.dumps(ghost_data)
 

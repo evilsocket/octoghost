@@ -104,7 +104,7 @@ for markdown_file in markdown_files:
                     value = match.group("value")
                     if field == "title":
                         title = re.sub(r'^"|"$', '', value)
-                        post["title"] = title
+                        post["title"] = title[:150] if len(title) > 150 else title
                         post["slug"] = slugify(title)
                     elif field == "slug":
                         # FIX: Use slug if available

@@ -47,9 +47,12 @@ ARG_INPUT_FOLDER = 1
 ARG_OUTPUT_JSON = 2
 
 def strip_single_quote(s):
-    if s.endswith(" "): s = s[:-1]
-    if s.startswith(" "): s = s[1:]
+    if s.endswith("'"): s = s[:-1]
+    if s.startswith("'"): s = s[1:]
     return s
+
+def tuning_post_content(s):
+    return s.replace("{% codeblock %}", "```").replace("{% endcodeblock %}", "```")
 
 if len(sys.argv) < 3:
     ARG_INPUT_FOLDER = "."
@@ -155,7 +158,7 @@ for markdown_file in markdown_files:
                 raise Exception('Unexpected exception!')
 
     post_id = post_id + 1
-    post["markdown"] = "\n".join(markdown)
+    post["markdown"] = tuning_post_content("\n".join(markdown))
     posts.append(post)
 
 ghost_json_file_name = sys.argv[ARG_OUTPUT_JSON]

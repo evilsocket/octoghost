@@ -46,6 +46,14 @@ lang = "en_US"
 ARG_INPUT_FOLDER = 1
 ARG_OUTPUT_JSON = 2
 
+def strip_single_quote(s):
+    if s.endswith("'"): s = s[:-1]
+    if s.startswith("'"): s = s[1:]
+    return s
+
+def tuning_post_content(s):
+    return s.replace("{% codeblock %}", "```").replace("{% endcodeblock %}", "```")
+
 if len(sys.argv) < 3:
     ARG_INPUT_FOLDER = "."
     ARG_OUTPUT_JSON = "output.json"
@@ -104,7 +112,8 @@ for markdown_file in markdown_files:
                     value = match.group("value")
                     if field == "title":
                         title = re.sub(r'^"|"$', '', value)
-                        post["title"] = title
+                        title = strip_single_quote(title)
+                        post["title"] = title[:150] if len(title) > 150 else title
                         post["slug"] = slugify(title)
                     elif field == "slug":
                         # FIX: Use slug if available
@@ -125,38 +134,41 @@ for markdown_file in markdown_files:
                         post["updated_at"] = t
                         post["published_at"] = t
                     elif field == "categories":
+                        if not value:
+                            pass
                         the_tags = value.split(" ")
                         for tag in the_tags:
-                            if not categories.has_key(tag):
-                                categories[tag] = next_tag_id
-                                next_tag_id = next_tag_id + 1
-                                tags.append({
-                                    "id": categories[tag],
-                                    "slug": slugify(tag),
-                                    "name": tag,
-                                    "uuid": str(uuid.uuid4())
+                            if tag:
+                                if not categories.has_key(tag):
+                                    categories[tag] = next_tag_id
+                                    next_tag_id = next_tag_id + 1
+                                    tags.append({
+                                        "id": categories[tag],
+                                        "slug": slugify(tag),
+                                        "name": tag.replace(",", "").replace("]", "").replace("[", ""),
+                                        "uuid": str(uuid.uuid4())
+                                        })
+                                posts_tags.append({
+                                    "id": post_tag_id,
+                                    "post_id": post_id,
+                                    "tag_id": categories[tag],
                                     })
-                            posts_tags.append({
-                                "id": post_tag_id,
-                                "post_id": post_id,
-                                "tag_id": categories[tag],
-                                })
-                            post_tag_id = post_tag_id + 1
+                                post_tag_id = post_tag_id + 1
                     else:
                         pass
             else:
                 raise Exception('Unexpected exception!')
 
     post_id = post_id + 1
-    post["markdown"] = "\n".join(markdown)
+    post["markdown"] = tuning_post_content("\n".join(markdown))
     posts.append(post)
 
 ghost_json_file_name = sys.argv[ARG_OUTPUT_JSON]
 ghost_data = json.loads(open(ghost_json_file_name).read())
 
-ghost_data['data']['posts'] = posts
-ghost_data['data']['tags'] = tags
-ghost_data['data']['posts_tags'] = posts_tags
+ghost_data["db"][0]["data"]["posts"] = posts
+ghost_data["db"][0]["data"]["tags"] = tags
+ghost_data["db"][0]["data"]['posts_tags'] = posts_tags
 
 print json.dumps(ghost_data)
 
